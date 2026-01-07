@@ -30,19 +30,13 @@ class ResumeReader:
             return f"Error reading PDF: {e}"
         
     def summarize_resume(self, text, max_words = 250):
-        prompt = f"""
-                Analyze this resume and provide a structured breakdown:
-                1. **Executive Summary**: 2-3 sentences on who this candidate is.
-                2. **Core Competencies**: A bulleted list of the top 5 skills found.
-                3. **Experience Gap**: Identify any missing skills or red flags in their work history.
-                4. **Best Fit**: Suggest 2-3 job titles this candidate is perfectly qualified for.
-
-                Keep the entire response under {max_words} words.
-
-                RESUME CONTENT:
-                {text}
-                """
-        
+        prompt = (  
+                    f"Act as a Senior HR Manager. Analyze the following resume text and "
+                    f"summarize it in roughly {max_words} words. "
+                    f"Use bullet points for skills and bold text for job titles. "
+                    f"Focus heavily on measurable impact and years of experience. \n\n"
+                    f"RESUME:\n{text}"
+                )
         response = self.client.models.generate_content(
             model = "gemini-2.5-flash",
             contents = prompt 
@@ -53,9 +47,10 @@ class ResumeReader:
 def main():
     parser = argparse.ArgumentParser(description="CV Reader")
     
+    #positional argument
     parser.add_argument("pdf_path", type=str, help="Path to the resume PDF file")
     
-    # Optional arguments
+    #Optional arguments
     parser.add_argument("-l", "--max_length", type=int, default=200, help="Max summary length in words")
     parser.add_argument("-o", "--output", type=str, help="Output text file path to save the summary")
     parser.add_argument("-k", "--key", type=str, help="Manually provide Gemini API Key")
@@ -73,7 +68,7 @@ def main():
         #defining the reader
         reader = ResumeReader(api_key=args.key)
         
-        print(f"--- Processing: {pdf_file.name} ---")
+        # print(f"--- Processing: {pdf_file.name} ---")
 
         raw_text = reader.extract_text(pdf_file)
         
