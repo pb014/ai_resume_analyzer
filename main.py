@@ -1,5 +1,4 @@
-import argparse
-import os
+import argparse, os, sys, time, threading
 from pathlib import Path
 from PyPDF2 import PdfReader
 from google import genai
@@ -33,7 +32,7 @@ class ResumeReader:
         prompt = (  
                     f"Act as a Senior HR Manager. Analyze the following resume text and "
                     f"summarize it in roughly {max_words} words. "
-                    f"Use bullet points for skills and bold text for job titles. "
+                    f"Use bullet points for skills."
                     f"Focus heavily on measurable impact and years of experience. \n\n"
                     f"RESUME:\n{text}"
                 )
@@ -43,6 +42,15 @@ class ResumeReader:
         )
 
         return response.text or ""
+
+def loading_spinner(stop_event):
+    chars = ["|", "/", "-", "\\"]
+    while not stop_event.is_set():
+        for char in chars:
+            sys.stdout.write(f'\r[Thinking] {char}')
+            sys.stdout.flush()
+            time.sleep(0.1)
+    sys.stdout.write('\r' + ' ' * 25 + '\r')
 
 def main():
     parser = argparse.ArgumentParser(description="CV Reader")
@@ -67,18 +75,24 @@ def main():
     try:
         #defining the reader
         reader = ResumeReader(api_key=args.key)
-        
-        # print(f"--- Processing: {pdf_file.name} ---")
 
         raw_text = reader.extract_text(pdf_file)
         
         if not raw_text.strip():
             print("Error: Could not extract any text from the PDF.")
             return
+        
+        stop_loading = threading.Event()
+
+        spinner_thread = threading.Thread(target = loading_spinner, args=(stop_loading, ))
+        spinner_thread.start()
 
         summary = reader.summarize_resume(raw_text, max_words=args.max_length)
         
-        print("\nRESUME SUMMARY:\n" + "="*20)
+        stop_loading.set()
+        spinner_thread.join()
+
+        print("\n" + "Analysis Complete".center(30, "-"))
         print(summary)
 
         if args.output:
