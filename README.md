@@ -10,20 +10,20 @@ AI Resume Reader powered by Google gemini which creates a dedicated summary for 
 ## Installation & Setup
 
   1. Prerequisites
-  - [Mamba](https://mamba.readthedocs.io/en/latest/installation.html) or Conda installed on your system.
-  - A **Google Gemini API Key**. You can get one for free at [Google AI Studio](https://aistudio.google.com/).
+    - [Mamba](https://mamba.readthedocs.io/en/latest/installation.html) or Conda installed on your system.
+    - A **Google Gemini API Key**. You can get one for free at [Google AI Studio](https://aistudio.google.com/).
   
   2. Clone and Prepare
   ```bash
-      # Clone the repository
-      git clone https://github.com/pb014/ai_resume_analyzer
-      cd ai-resume-reader
+    # Clone the repository
+    git clone https://github.com/pb014/ai_resume_analyzer
+    cd ai-resume-reader
       
-      # Create the environment using Mamba
-      mamba env create -f environment.yml
+    # Create the environment using Mamba
+    mamba env create -f environment.yml
       
-      # Activate the environment
-      mamba activate ai
+    # Activate the environment
+    mamba activate ai
   ```
 
   3. Configure API key
