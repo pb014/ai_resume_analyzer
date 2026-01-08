@@ -40,10 +40,10 @@ AI Resume Reader powered by Google gemini which creates a dedicated summary for 
   Run the script from your terminal by providing the path to a PDF resume.
   ```bash
     # Standard Usage (make sure to keep your resume in the same directory)
-      python main.py path/to/resume.pdf
+    python main.py path/to/resume.pdf
   
     # Advanced usage
-      python main.py -h
+    python main.py -h
   ```
   
 
